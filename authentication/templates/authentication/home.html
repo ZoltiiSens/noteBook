@@ -1,0 +1,32 @@
+{#---------- Base extending ----------#}
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{#---------- Title ----------#}
+{% block title %}
+    Home
+{% endblock %}
+
+{#---------- Extra styles ----------#}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{#---------- Content block ----------#}
+{% block content %}
+    <div class="wrapper">
+        <div class="container">
+            {% if user.is_authenticated %}
+                <a href="{% url 'week_list' %}" class="start_button">Let's work</a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">or <span class="underlined">logout</span></button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="link_element underlined">Log in</a>
+                <span class="divider">or</span>
+                <a href="{% url 'signup' %}" class="link_element underlined">Sign up</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

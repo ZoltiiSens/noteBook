@@ -1,0 +1,33 @@
+{#---------- Base extending ----------#}
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{#---------- Title ----------#}
+{% block title %}
+    Log in
+{% endblock %}
+
+{#---------- Extra styles ----------#}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+
+{#---------- Content block ----------#}
+{% block content %}
+    <div class="wrapper">
+        <div class="container">
+            <h1>Signup</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                {% endfor %}
+                <button type="submit">Sign up</button>
+                <p class="error_handler">{{ error }}</p>
+            </form>
+            <span class="info">Already has an account? <a href="{% url 'login' %}" class="underlined">Login</a></span>
+        </div>
+    </div>
+
+{% endblock %}

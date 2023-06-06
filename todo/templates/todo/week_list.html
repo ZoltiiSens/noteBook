@@ -1,0 +1,110 @@
+{#---------- Base extending ----------#}
+{% extends 'todo/base.html' %}
+{% load static %}
+
+{#---------- Title ----------#}
+{% block title %}
+    Week list
+{% endblock %}
+
+{#---------- Extra styles ----------#}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/week_list.css' %}">
+{% endblock %}
+
+{#---------- Content block ----------#}
+{% block content %}
+    <div class ="popup_background" id="{% if messages %}active_background{% endif %}" onclick="closePopup()"></div>
+    <div class="wrapper">
+		<section class="container">
+
+            <!----- Header ----->
+            <header>
+                <h1>Week list</h1>
+                <div class="header__links">
+                    <a class="header__links_element underlined" href="{% url 'week_list_archive' %}">Archive</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="header__links_element underlined" type="submit">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            <!----- Head line ----->
+			<div class="headline">
+				<div class="headline__title">TITLE</div>
+			</div>
+			<hr>
+
+			<!----- Lines ----->
+            {% for week in weeks_list %}
+                <div class="line">
+                    <a href="{% url 'week_show' week.id %}" class="line__title">{{ week.title|truncatechars:45 }}</a>
+                    <div class="line__edit" onclick="editWeek({{ week.id }})"></div>
+
+                    <!----- Week editing popup ----->
+                    <div class ="editing_popup--{{ week.id }} popup" id="">
+                        <div class="popup__close" onclick="closePopup()"><img src="{% static 'images/more.svg' %}" alt=""></div>
+                        <h2>Edit a week</h2>
+                        <form method="POST" action="{% url 'week_edit' week.id %}">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <input type="text" name="title" maxlength="100" required="" value="{{ week.title }}">
+                            {% endfor %}
+                            <button class="usual_button" type="submit">Save</button>
+                        </form>
+                        <form method="POST" action="{% url 'week_delete' week.id %}">
+                            {% csrf_token %}
+                            <button class="usual_button" type="submit">Delete</button>
+                        </form>
+                        <form method="POST" action="{% url 'week_archive' week.id %}">
+                            {% csrf_token %}
+                            <button class="usual_button" type="submit">Archive</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!----- Week addition line ----->
+            <div class="line">
+                <span class="line__title"></span>
+                <div class="img-wrapper more" onclick="createWeek()">
+                    <img src="{% static 'images/more.svg' %}" alt="">
+                </div>
+            </div>
+		</section>
+	</div>
+
+    <!----- Week creation popup ----->
+    <div class ="creation_popup popup" id="">
+        <div class="popup__close" onclick="closePopup()"><img src="{% static 'images/more.svg' %}" alt=""></div>
+        <h2>Create a week</h2>
+        <form method="POST" action="{% url 'week_create' %}">
+            {% csrf_token %}
+            {% for field in form %}
+                {{ field }}
+            {% endfor %}
+            <button class="usual_button" type="submit">Create</button>
+        </form>
+    </div>
+
+    <!----- Error handling popup ----->
+    {% if messages %}
+        <div class ="error_popup popup" id="active_popup">
+            <div class="popup__close" onclick="closePopup()"><img src="{% static 'images/more.svg' %}" alt=""></div>
+            {% for message in messages %}
+                <h2>{{ message }}</h2>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

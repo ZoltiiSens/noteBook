@@ -1,0 +1,62 @@
+{#---------- Base extending ----------#}
+{% extends 'todo/base.html' %}
+{% load static %}
+
+{#---------- Title ----------#}
+{% block title %}
+    Week list
+{% endblock %}
+
+{#---------- Extra styles ----------#}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/week_archive.css' %}">
+{% endblock %}
+
+{#---------- Content block ----------#}
+{% block content %}
+    <div class ="popup_background" id="{% if messages %}active_background{% endif %}" onclick="closePopup()"></div>
+    <div class="wrapper">
+		<section class="container">
+
+            <!----- Header ----->
+            <header>
+                <h1>Week archive</h1>
+                <div class="control_links">
+                    <a class="header__links_element underlined" href="{% url 'week_list' %}">Week list</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="header__links_element underlined" type="submit">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            <!----- Head line ----->
+			<div class="headline">
+				<div class="headline-title">TITLE</div>
+			</div>
+			<hr>
+			<!----- Lines ----->
+            {% for week in weeks_list %}
+                <div class="line">
+                    <a href="{% url 'week_show' week.id %}" class="line__title">{{ week.title|truncatechars:45 }}</a>
+                    <div class="line__edit" onclick="editWeek({{ week.id }})"></div>
+
+                    <!----- Week editing popup ----->
+                    <div class ="editing_popup--{{ week.id }} popup" id="">
+                        <div class="popup__close" onclick="closePopup()"><img src="{% static 'images/more.svg' %}" alt=""></div>
+                        <h2>Edit an archived week</h2>
+                        <h3>"{{ week.title }}"</h3>
+                        <form method="POST" action="{% url 'week_delete' week.id %}">
+                            {% csrf_token %}
+                            <button class="usual_button" type="submit">Delete</button>
+                        </form>
+                        <form method="POST" action="{% url 'week_unarchive' week.id%}">
+                            {% csrf_token %}
+                            <button class="usual_button" type="submit">Unarchive</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+		</section>
+	</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{#---------- Base extending ----------#}
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{#---------- Title ----------#}
+{% block title %}
+    Log in
+{% endblock %}
+
+{#---------- Extra styles ----------#}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{#---------- Content block ----------#}
+{% block content %}
+    <div class="wrapper">
+        <div class="container">
+            <h1>login</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Log in</button>
+                <p class="error_handler">{{ error }}</p>
+            </form>
+            <span class="info">Don't have an account? <a href="{% url 'signup' %}" class="underlined">Signup</a></span>
+        </div>
+    </div>
+{% endblock %}
+
+
+
